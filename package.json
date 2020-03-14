@@ -2,15 +2,29 @@
   "name": "custom-server-express",
   "version": "1.0.0",
   "scripts": {
-    "dev": "node server.js",
-    "build": "next build",
-    "start": "cross-env NODE_ENV=production node server.js"
+    "dev": "nodemon",
+    "build": "NODE_ENV=production next build && tsc --project tsconfig.server.json && cp -R public dist",
+    "start": "NODE_ENV=production node dist/server/index.js"
   },
   "dependencies": {
-    "cross-env": "^5.2.0",
-    "express": "^4.14.0",
-    "next": "latest",
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0"
+    "cross-env": "5.2.0",
+    "express": "4.17.1",
+    "isomorphic-unfetch": "3.0.0",
+    "lodash": "4.17.15",
+    "next": "9.3.0",
+    "pg": "7.18.2",
+    "react": "16.13.0",
+    "react-dom": "16.13.0",
+    "reflect-metadata": "0.1.13",
+    "typeorm": "0.2.24"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.3",
+    "@types/lodash": "4.14.149",
+    "@types/node": "13.9.1",
+    "@types/react": "16.9.23",
+    "nodemon": "2.0.2",
+    "ts-node": "8.6.2",
+    "typescript": "3.8.3"
   }
 }
