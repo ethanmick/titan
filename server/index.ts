@@ -1,4 +1,5 @@
 import express from 'express'
+require('express-async-errors')
 import next from 'next'
 import { api } from './api'
 import { connection } from './models'

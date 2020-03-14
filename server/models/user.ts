@@ -6,6 +6,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
+import bcrypt from 'bcrypt'
+import { UnauthorizedError } from '../errors'
+
+const SALT_ROUNDS = 12
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -13,7 +17,7 @@ export class User extends BaseEntity {
   id: number
 
   @Column()
-  email: string
+  username: string
 
   @Column()
   password: string
@@ -23,4 +27,28 @@ export class User extends BaseEntity {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
+
+  static async register(
+    username: string,
+    unencryptedPassword: string
+  ): Promise<User> {
+    const password = await bcrypt.hash(unencryptedPassword, SALT_ROUNDS)
+    const user = User.create({
+      username,
+      password
+    })
+    return await user.save()
+  }
+
+  static async login(username: string, password: string): Promise<User> {
+    const user = await User.findOne({ username })
+    if (!user) {
+      throw new UnauthorizedError()
+    }
+    const success = await bcrypt.compare(password, user.password)
+    if (!success) {
+      throw new UnauthorizedError()
+    }
+    return user
+  }
 }

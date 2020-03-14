@@ -5,7 +5,7 @@ begin transaction;
 
 create table users (
   id serial not null primary key,
-  email text not null,
+  username text not null,
   password text not null,
   -- Model Objects
   created_at timestamp without time zone not null default now(),
