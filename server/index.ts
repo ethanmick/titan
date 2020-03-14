@@ -16,7 +16,7 @@ app.prepare().then(() => {
   server.use('/public', express.static('public'))
   server.use('/api', api)
 
-  server.all('*', (req, res) => {
+  server.all('*', (req: any, res: any) => {
     return handle(req, res)
   })
 

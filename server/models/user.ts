@@ -7,6 +7,7 @@ import {
   UpdateDateColumn
 } from 'typeorm'
 import bcrypt from 'bcrypt'
+import { v4 as uuid } from 'uuid'
 import { UnauthorizedError } from '../errors'
 
 const SALT_ROUNDS = 12
@@ -21,6 +22,9 @@ export class User extends BaseEntity {
 
   @Column()
   password: string
+
+  @Column()
+  token: string
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date
@@ -49,6 +53,9 @@ export class User extends BaseEntity {
     if (!success) {
       throw new UnauthorizedError()
     }
-    return user
+    user.token = uuid()
+    const saved = await user.save()
+    delete saved.password
+    return saved
   }
 }

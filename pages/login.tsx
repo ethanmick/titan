@@ -11,6 +11,8 @@ const Login = () => {
     e.preventDefault()
     try {
       const { token } = await api.login({ username, password })
+      console.log('Successful login, token:', token)
+      api.token = token
       cookie.set('token', token)
       Router.push('/')
     } catch (err) {

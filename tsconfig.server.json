@@ -5,7 +5,9 @@
     "outDir": "dist",
     "target": "es2017",
     "isolatedModules": false,
-    "noEmit": false
+    "noEmit": false,
+    "typeRoots": ["./node_modules/@types", "types/**/*.ts"]
   },
-  "include": ["server/**/*.ts", "types/**/*.ts"]
+  "include": ["server/**/*.ts", "types/**/*.ts"],
+  "files": ["types/**/*.ts"]
 }

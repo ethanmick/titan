@@ -33,7 +33,7 @@ const handleError = async (res: Response): Promise<any> => {
 }
 
 export class Api {
-  private token?: string
+  public token?: string
 
   private async _fetch<T>(uri: string, opts: RequestInit = {}): Promise<T> {
     const options = {
