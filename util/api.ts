@@ -1,7 +1,11 @@
 import 'isomorphic-unfetch'
-import getConfig from 'next/config'
-import { get } from 'lodash'
-const API_URL: string = get(getConfig(), 'publicRuntimeConfig.api.url', '/api')
+import { getAuth } from '../util/auth'
+import { NextPageContext } from 'next'
+import Router from 'next/router'
+
+// TODO: this is broken?
+//const API_URL: string = get(getConfig(), 'publicRuntimeConfig.api.url', '/api')
+const API_URL = 'http://localhost:3000/api'
 
 const headers = {
   Accept: 'application/json',
@@ -15,6 +19,12 @@ const authHeaders = (token?: string): any =>
       }
     : {}
 
+export const http = (ctx: any = {}) => {
+  const { token } = getAuth(ctx)
+  console.log('Http found token', token)
+  return new Api(token, ctx)
+}
+
 const handleError = async (res: Response): Promise<any> => {
   if (res.status === 204) {
     return Promise.resolve()
@@ -22,18 +32,20 @@ const handleError = async (res: Response): Promise<any> => {
   if (res.status >= 200 && res.status < 400) {
     return res.json()
   }
-  let messages
+
+  console.log('Made a request and it failed!!!')
+  let message
   if (res.bodyUsed) {
-    messages = (await res.clone().json()).errors
+    message = (await res.clone().json()).error
   } else {
-    messages = [`${res.status}: ${res.statusText}`]
+    message = [`${res.status}: ${res.statusText}`]
   }
-  console.error(`api: ${messages.join('; ')}`)
-  throw new Error()
+  console.error(`api: ${message}`)
+  throw new Error(message)
 }
 
 export class Api {
-  public token?: string
+  constructor(public token: string | undefined, readonly ctx: any) {}
 
   private async _fetch<T>(uri: string, opts: RequestInit = {}): Promise<T> {
     const options = {
@@ -46,7 +58,24 @@ export class Api {
       body: opts.body
     }
     const res = await fetch(`${API_URL}${uri}`, options)
+
+    if (res.status == 401) {
+      typeof window !== 'undefined'
+        ? Router.push('/login')
+        : this.ctx.res.writeHead(302, { Location: '/login' }).end()
+    }
+
     return handleError(res)
+  }
+
+  // Load tokens from cookie
+  public loadAuth(ctx: NextPageContext) {
+    const { token } = getAuth(ctx)
+    this.token = token
+  }
+
+  public setAuth(token: string) {
+    this.token = token
   }
 
   login = ({ username, password }: { username: string; password: string }) =>
@@ -54,6 +83,9 @@ export class Api {
       method: 'POST',
       body: JSON.stringify({ username, password })
     })
-}
 
-export const api = new Api()
+  getCurrentUser = (opts: RequestInit = {}) =>
+    this._fetch<any>(`/user/me`, opts)
+
+  getBuildings = () => this._fetch('/building')
+}

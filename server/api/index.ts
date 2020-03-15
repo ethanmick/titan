@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express'
 import { auth } from './auth'
 import { game } from './game'
+import { user } from './user'
 
 /**
  * I DO NOT WANT THIS HERE
@@ -34,6 +35,7 @@ r.get('/health', async (_req: Request, res: Response) => {
 
 r.use('/auth', auth)
 r.use('/', game)
+r.use('/user', user)
 
 r.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   if (!err.httpCode) {
