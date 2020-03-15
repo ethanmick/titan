@@ -21,6 +21,7 @@
     "react-dom": "16.13.0",
     "reflect-metadata": "0.1.13",
     "typeorm": "0.2.24",
+    "universal-cookie": "4.0.3",
     "uuid": "7.0.2"
   },
   "devDependencies": {

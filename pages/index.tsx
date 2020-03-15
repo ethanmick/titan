@@ -24,9 +24,13 @@ const Overview = ({ error }: OverviewProps) => {
   )
 }
 
+// This always runs on the SERVER
 export const getServerSideProps: GetServerSideProps = async ctx => {
+  console.log(ctx.req.headers)
   const api = http(ctx)
+  console.log('token', api.token)
   try {
+    // DB??
     const buildings = await api.getBuildings()
     const user = await api.getCurrentUser()
     return {

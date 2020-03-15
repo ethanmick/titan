@@ -20,9 +20,9 @@ const authHeaders = (token?: string): any =>
     : {}
 
 export const http = (ctx: any = {}) => {
-  const { token } = getAuth(ctx)
-  console.log('Http found token', token)
-  return new Api(token, ctx)
+  const user = getAuth(ctx)
+  console.log('HTTP: found user', user)
+  return new Api(user.token, ctx)
 }
 
 const handleError = async (res: Response): Promise<any> => {
@@ -89,3 +89,11 @@ export class Api {
 
   getBuildings = () => this._fetch('/building')
 }
+
+/*
+export api {
+  getCurrentUser,
+  getBuildings,
+
+}
+*/

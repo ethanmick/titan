@@ -1,24 +1,19 @@
-import React, { useState, useContext } from 'react'
-import cookie from 'js-cookie'
+import React, { useState } from 'react'
 import Router from 'next/router'
-import { UserContext } from '../context/UserContext'
 import { http } from '../util/api'
+import { authenticated } from '../util/auth'
 
 const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const { setUser } = useContext(UserContext)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
       const api = http()
       const user = await api.login({ username, password })
-      setUser(user)
-      const { token } = user
-      console.log('Successful login, token:', token)
-      api.token = token
-      cookie.set('token', token)
+      console.log('Successful login, user', user)
+      authenticated(user)
       Router.push('/')
     } catch (err) {
       console.log(err)
