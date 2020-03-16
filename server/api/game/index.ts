@@ -3,6 +3,7 @@ import { UnauthorizedError } from '../../errors'
 import { User } from '../../models'
 import { last } from 'lodash'
 import { buildings } from './building'
+import { resources } from './resource'
 
 const r = express.Router()
 
@@ -21,5 +22,6 @@ r.use(async (req: Request, _res: Response, next: NextFunction) => {
 })
 
 r.use('/building', buildings)
+r.use('/resource', resources)
 
 export const game = r

@@ -26,6 +26,9 @@ export class User extends BaseEntity {
   @Column()
   token: string
 
+  @Column({ name: 'last_game_update' })
+  lastGameUpdate: Date
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date
 

@@ -5,7 +5,12 @@ const r = express.Router()
 
 r.get('/', async (req: Request, res: Response) => {
   const { user } = req.ctx
-  const buildings = await Building.find({ where: { userId: user.id } })
+  const buildings = (await Building.find({ where: { userId: user.id } })).map(
+    b => ({
+      ...b,
+      ...b.cost()
+    })
+  )
   res.json(buildings)
 })
 
