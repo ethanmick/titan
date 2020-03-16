@@ -38,10 +38,10 @@ export const calculate = async (user: User) => {
   const resources = await Resource.find({ where: { user } })
   for (const res of resources) {
     const building = await Building.findOne({
-      where: { user, type: res.resource }
+      where: { user, resource: res.resource }
     })
     if (!building) {
-      // oh shit
+      // No building for this resource, so we don't need to change the amoutn
       continue
     }
     const gained = building.production({ d, T, E })

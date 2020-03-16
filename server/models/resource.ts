@@ -4,10 +4,8 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
-  ManyToOne
+  UpdateDateColumn
 } from 'typeorm'
-import { User } from './user'
 
 @Entity('resources')
 export class Resource extends BaseEntity {
@@ -15,14 +13,10 @@ export class Resource extends BaseEntity {
   id: number
 
   @Column({ name: 'user_id' })
-  userId: number
-
-  @ManyToOne(() => User)
-  user: User
+  user: number
 
   @Column()
   resource: string
-  // typpe?
 
   @Column()
   amount: number

@@ -23,7 +23,7 @@ export class Building extends BaseEntity {
   level: number
 
   @Column()
-  type: string
+  resource: string
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date
@@ -33,9 +33,9 @@ export class Building extends BaseEntity {
 
   // Calculated Methods
   private get formula(): BuildingFormula {
-    const formula = (formulas as any)[this.type]
+    const formula = (formulas as any)[this.resource]
     if (!formula) {
-      throw new Error(`No formula found for ${this.type}`)
+      throw new Error(`No formula found for ${this.resource}`)
     }
     return formula
   }
