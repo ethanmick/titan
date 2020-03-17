@@ -89,6 +89,12 @@ export class Api {
 
   getBuildings = () => this._fetch('/building')
 
+  upgradeBuilding = (id: number) =>
+    this._fetch(`/building/${id}/upgrade`, {
+      method: 'POST',
+      body: '{}'
+    })
+
   getResources = () => this._fetch('/resource')
 }
 

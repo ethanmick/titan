@@ -20,6 +20,7 @@ export interface ResourceBlock {
   deuterium?: number
   energy?: number
 }
+export type ResourceType = keyof ResourceBlock
 
 export type CalculateResourceBlock = (ctx: FormulaContext) => ResourceBlock
 

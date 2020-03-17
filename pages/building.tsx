@@ -5,32 +5,44 @@ import { Resource } from '../server/models'
 
 interface BuildingsProps {
   resources: Resource[]
+  buildings: Building[]
   error?: string
 }
 
 interface Building {
+  id: number
   name: string
+  description: string
   type: string
   upgrade?: any
 }
 
 const BUILDINGS: Building[] = [
   {
+    id: 0,
     name: 'Metal Mine',
+    description: '',
     type: 'metal'
   }
 ]
 
-const Building = ({ name, upgrade }: Building) => (
+const Building = ({ description, name, upgrade }: Building) => (
   <div>
     <h2>{name}</h2>
+    <p>{description}</p>
     <button onClick={upgrade}>Upgrade</button>
   </div>
 )
 
 const Buildings = ({ error, resources }: BuildingsProps) => {
-  const upgrade = (e: any, _building: Building) => {
+  const upgrade = async (e: any, building: Building) => {
     e.preventDefault()
+    const api = http()
+    try {
+      await api.upgradeBuilding(building.id)
+    } catch {
+      console.log('no resources, or something')
+    }
   }
 
   if (error) {
@@ -41,7 +53,7 @@ const Buildings = ({ error, resources }: BuildingsProps) => {
       <h1>Buildings</h1>
       <div>
         {resources.map(r => (
-          <div>
+          <div key={r.id}>
             {r.resource}:{r.amount}
           </div>
         ))}
@@ -49,6 +61,7 @@ const Buildings = ({ error, resources }: BuildingsProps) => {
       <div>
         {BUILDINGS.map(b => (
           <Building
+            key={b.name}
             {...b}
             upgrade={(e: React.MouseEvent<HTMLElement>) => upgrade(e, b)}
           />
@@ -63,9 +76,9 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   const api = http(ctx)
   try {
     const resources = await api.getResources()
-    console.log('TEST')
+    const buildings = await api.getBuildings()
     return {
-      props: { resources }
+      props: { buildings, resources }
     }
   } catch (err) {
     return {
