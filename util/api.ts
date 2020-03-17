@@ -88,6 +88,8 @@ export class Api {
     this._fetch<any>(`/user/me`, opts)
 
   getBuildings = () => this._fetch('/building')
+
+  getResources = () => this._fetch('/resource')
 }
 
 /*

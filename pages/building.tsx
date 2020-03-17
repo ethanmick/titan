@@ -1,15 +1,59 @@
 import React from 'react'
 import { GetServerSideProps } from 'next'
-import { Resource } from '../server/models'
 import { http } from '../util/api'
+import { Resource } from '../server/models'
 
-interface BuildingsProps {}
+interface BuildingsProps {
+  resources: Resource[]
+  error?: string
+}
 
-const Buildings = ({}: BuildingsProps) => {
+interface Building {
+  name: string
+  type: string
+  upgrade?: any
+}
+
+const BUILDINGS: Building[] = [
+  {
+    name: 'Metal Mine',
+    type: 'metal'
+  }
+]
+
+const Building = ({ name, upgrade }: Building) => (
+  <div>
+    <h2>{name}</h2>
+    <button onClick={upgrade}>Upgrade</button>
+  </div>
+)
+
+const Buildings = ({ error, resources }: BuildingsProps) => {
+  const upgrade = (e: any, _building: Building) => {
+    e.preventDefault()
+  }
+
+  if (error) {
+    return <div>{error}</div>
+  }
   return (
     <>
       <h1>Buildings</h1>
-      <div></div>
+      <div>
+        {resources.map(r => (
+          <div>
+            {r.resource}:{r.amount}
+          </div>
+        ))}
+      </div>
+      <div>
+        {BUILDINGS.map(b => (
+          <Building
+            {...b}
+            upgrade={(e: React.MouseEvent<HTMLElement>) => upgrade(e, b)}
+          />
+        ))}
+      </div>
     </>
   )
 }
@@ -18,8 +62,8 @@ const Buildings = ({}: BuildingsProps) => {
 export const getServerSideProps: GetServerSideProps = async ctx => {
   const api = http(ctx)
   try {
-    const user = await api.getCurrentUser()
-    const resources = {} // Resource.find({ where: { user } })
+    const resources = await api.getResources()
+    console.log('TEST')
     return {
       props: { resources }
     }

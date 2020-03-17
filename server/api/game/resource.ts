@@ -5,7 +5,7 @@ const r = express.Router()
 
 r.get('/', async (req: Request, res: Response) => {
   const { user } = req.ctx
-  const resources = await Resource.find({ where: { userId: user.id } })
+  const resources = await Resource.find({ where: { user } })
   res.json(resources)
 })
 
