@@ -8,6 +8,5 @@
     "noEmit": false,
     "typeRoots": ["./node_modules/@types", "types/**/*.ts"]
   },
-  "include": ["server/**/*.ts", "types/**/*.ts"],
-  "files": ["types/**/*.ts"]
+  "include": ["server/**/*.ts", "types/**/*.ts"]
 }
