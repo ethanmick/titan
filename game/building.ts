@@ -1,10 +1,11 @@
-import { ResourceBlock, FormulaContext } from './formulas'
 import { MS_PER_HOUR } from './constants'
+import { FormulaContext, ResourceBlock } from './formulas'
 
 export enum BuildingType {
   MetalMine = 'METAL_MINE',
   CrystalMine = 'CRYSTAL_MINE',
-  DeuteriumMine = 'DEUTERIUM_MINE'
+  DeuteriumMine = 'DEUTERIUM_MINE',
+  SolarPlant = 'SOLAR_PLANT'
 }
 
 export interface Building {
@@ -24,6 +25,9 @@ const _productions = {
   }),
   [BuildingType.DeuteriumMine]: ({ d, L, E, T }: FormulaContext) => ({
     deuterium: ((10 * L * E * 1.1 ** L * (-0.002 * T + 1.28)) / MS_PER_HOUR) * d
+  }),
+  [BuildingType.SolarPlant]: ({ L }: FormulaContext) => ({
+    energy: 20 * L * 1.1 ** L
   })
 }
 
@@ -36,7 +40,8 @@ const _consumption = {
   }),
   [BuildingType.DeuteriumMine]: ({ L }: FormulaContext) => ({
     energy: 20 * L * 1.1 ** L
-  })
+  }),
+  [BuildingType.SolarPlant]: (_: FormulaContext) => ({})
 }
 
 const _cost = {
@@ -51,6 +56,10 @@ const _cost = {
   [BuildingType.DeuteriumMine]: ({ L }: FormulaContext) => ({
     metal: 225 * 1.5 ** (L - 1),
     crystal: 75 * 1.5 ** (L - 1)
+  }),
+  [BuildingType.SolarPlant]: ({ L }: FormulaContext) => ({
+    metal: 75 * 1.5 ** (L - 1),
+    crystal: 30 * 1.5 ** (L - 1)
   })
 }
 
@@ -105,6 +114,12 @@ export const Buildings = [
     name: 'Deuterium Synthesizer',
     description: 'Deuterium is used to power ships and research and things.',
     type: BuildingType.DeuteriumMine,
+    level: 0
+  },
+  {
+    name: 'Solar Plant',
+    description: 'Produces energy from the sun. Energy is used to power mines',
+    type: BuildingType.SolarPlant,
     level: 0
   }
 ]

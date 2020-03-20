@@ -19,6 +19,8 @@ create table buildings (
   id serial not null primary key,
   user_id int not null,
   name text not null,
+  description text not null,
+  type text not null,
   level int not null,
   resource text,
   -- Model Objects

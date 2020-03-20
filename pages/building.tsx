@@ -1,9 +1,10 @@
-import React from 'react'
-import { GetServerSideProps } from 'next'
-import { http } from '../util/api'
-import { Resource } from '../server/models'
-import { GameState, FormulaContext, Buildings, Building } from '../game/'
 import { find } from 'lodash'
+import { GetServerSideProps } from 'next'
+import React from 'react'
+import { Cost, Production } from '../components'
+import { Building, Buildings, FormulaContext, GameState } from '../game/'
+import { Resource } from '../server/models'
+import { http } from '../util/api'
 
 interface BuildingRowProps {
   building: Building
@@ -25,11 +26,17 @@ const BuildingRow = ({ building, ctx, upgrade }: BuildingRowProps) => {
         <h2>{building.name}</h2>
         <p>{building.description}</p>
         <div>Level: {building.level}</div>
-        <div>Production: {F.perHour().production()}</div>
-        <div>energy usage: {F.cost()}</div>
+        <div>
+          currently producing:
+          <Production production={F.perHour().production()} />
+        </div>
+        <Cost cost={F.consumption()} />
       </div>
-      <div>Upgrading Costs: {F.nextLevel().cost()}</div>
-      <button onClick={onClick}>Upgrade</button>
+      <div>
+        Next Level upgrade
+        <Cost cost={F.nextLevel().cost()} />
+        <button onClick={onClick}>Upgrade</button>
+      </div>
     </div>
   )
 }
