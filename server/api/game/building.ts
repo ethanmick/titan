@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express'
-import { Building, Resource } from '../../models'
+import { Building, Resource, Task } from '../../models'
 import { ForbiddenError } from '../../errors'
 import { first } from 'lodash'
-import { ResourceType } from 'server/game/formulas'
+import { ResourceType } from 'game/formulas'
 
 const r = express.Router()
 
@@ -11,7 +11,7 @@ r.get('/', async (req: Request, res: Response) => {
   const buildings = (await Building.find({ where: { userId: user.id } })).map(
     b => ({
       ...b,
-      ...b.cost()
+      ...b //.cost()
     })
   )
   res.json(buildings)
@@ -24,9 +24,12 @@ r.post('/:id/upgrade', async (req: Request, res: Response) => {
   if (!building) {
     throw new ForbiddenError()
   }
+  // Can't upgrade a building that is already upgrading
+  // task.findOne({user, type: 'building.upgrade', context->>building_id = building.id})
+
   // Try to increase the level
   building.level++
-  const cost = building.cost()
+  const cost: any = {} // building.cost()
   const resources = await Resource.find({ where: { user } })
 
   const toSave = []
@@ -49,8 +52,15 @@ r.post('/:id/upgrade', async (req: Request, res: Response) => {
   }
 
   await Promise.all(toSave.map(r => r.save()))
-  await building.save()
-  return res.json(building)
+
+  const task = new Task()
+  task.user = user
+  task.type = 'building.upgrade'
+  task.context = {
+    buildingId: building.id
+  }
+  await task.save()
+  return res.json({ ok: 'ok' })
 })
 
 export const buildings = r

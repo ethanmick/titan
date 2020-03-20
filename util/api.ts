@@ -2,6 +2,7 @@ import 'isomorphic-unfetch'
 import { getAuth } from '../util/auth'
 import { NextPageContext } from 'next'
 import Router from 'next/router'
+import { GameState } from 'game/state'
 
 // TODO: this is broken?
 //const API_URL: string = get(getConfig(), 'publicRuntimeConfig.api.url', '/api')
@@ -87,7 +88,7 @@ export class Api {
   getCurrentUser = (opts: RequestInit = {}) =>
     this._fetch<any>(`/user/me`, opts)
 
-  getBuildings = () => this._fetch('/building')
+  getBuildings = () => this._fetch<any>('/building')
 
   upgradeBuilding = (id: number) =>
     this._fetch(`/building/${id}/upgrade`, {
@@ -96,6 +97,8 @@ export class Api {
     })
 
   getResources = () => this._fetch('/resource')
+
+  getState = () => this._fetch<GameState>('/state')
 }
 
 /*

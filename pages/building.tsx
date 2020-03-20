@@ -2,44 +2,58 @@ import React from 'react'
 import { GetServerSideProps } from 'next'
 import { http } from '../util/api'
 import { Resource } from '../server/models'
+import { Buildings, Building } from '../game/buildings'
+import { find } from 'lodash'
+import { buildings as b, buildings } from 'server/api/game/building'
+import { FormulaContext } from '../game/formulas'
+import { GameState } from 'game/state'
+
+interface BuildingRowProps {
+  building: Building
+  ctx: FormulaContext
+  upgrade: (b: Building) => any
+}
+
+const BuildingRow = ({ building, ctx, upgrade }: BuildingRowProps) => {
+  const F = ctx.building(building)
+
+  const onClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault()
+    upgrade(building)
+  }
+
+  return (
+    <div>
+      <div>
+        <h2>{building.name}</h2>
+        <p>{building.description}</p>
+        <div>Level: {building.level}</div>
+        <div>Production: {F.perHour().production()}</div>
+        <div>energy usage: {F.cost()}</div>
+      </div>
+      <div>Upgrading Costs: {F.nextLevel().cost()}</div>
+      <button onClick={onClick}>Upgrade</button>
+    </div>
+  )
+}
 
 interface BuildingsProps {
   resources: Resource[]
   buildings: Building[]
+  state: GameState
   error?: string
 }
 
-interface Building {
-  id: number
-  name: string
-  description: string
-  type: string
-  upgrade?: any
-}
-
-const BUILDINGS: Building[] = [
-  {
-    id: 0,
-    name: 'Metal Mine',
-    description: '',
-    type: 'metal'
-  }
-]
-
-const Building = ({ description, name, upgrade }: Building) => (
-  <div>
-    <h2>{name}</h2>
-    <p>{description}</p>
-    <button onClick={upgrade}>Upgrade</button>
-  </div>
-)
-
-const Buildings = ({ error, resources }: BuildingsProps) => {
-  const upgrade = async (e: any, building: Building) => {
-    e.preventDefault()
+const BuildingPage = ({
+  state,
+  buildings,
+  error,
+  resources
+}: BuildingsProps) => {
+  const upgrade = async (building: Building) => {
     const api = http()
     try {
-      await api.upgradeBuilding(building.id)
+      await api.upgradeBuilding((building as any).id)
     } catch {
       console.log('no resources, or something')
     }
@@ -48,6 +62,10 @@ const Buildings = ({ error, resources }: BuildingsProps) => {
   if (error) {
     return <div>{error}</div>
   }
+
+  // Context for calculating values
+  const ctx = FormulaContext.fromState(state)
+
   return (
     <>
       <h1>Buildings</h1>
@@ -59,12 +77,8 @@ const Buildings = ({ error, resources }: BuildingsProps) => {
         ))}
       </div>
       <div>
-        {BUILDINGS.map(b => (
-          <Building
-            key={b.name}
-            {...b}
-            upgrade={(e: React.MouseEvent<HTMLElement>) => upgrade(e, b)}
-          />
+        {buildings.map(b => (
+          <BuildingRow key={b.name} ctx={ctx} building={b} upgrade={upgrade} />
         ))}
       </div>
     </>
@@ -76,9 +90,13 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   const api = http(ctx)
   try {
     const resources = await api.getResources()
-    const buildings = await api.getBuildings()
+    const state = await api.getState()
+    const buildings = Buildings.map(b => ({
+      ...b,
+      ...(find(state.buildings, { type: b.type }) ?? {})
+    }))
     return {
-      props: { buildings, resources }
+      props: { state, buildings, resources }
     }
   } catch (err) {
     return {
@@ -87,4 +105,4 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   }
 }
 
-export default Buildings
+export default BuildingPage
