@@ -1,4 +1,4 @@
-import { Building } from '../buildings'
+import { Building } from '../building'
 
 export interface GameState {
   buildings: Building[]

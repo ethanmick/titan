@@ -2,11 +2,8 @@ import React from 'react'
 import { GetServerSideProps } from 'next'
 import { http } from '../util/api'
 import { Resource } from '../server/models'
-import { Buildings, Building } from '../game/buildings'
+import { GameState, FormulaContext, Buildings, Building } from '../game/'
 import { find } from 'lodash'
-import { buildings as b, buildings } from 'server/api/game/building'
-import { FormulaContext } from '../game/formulas'
-import { GameState } from 'game/state'
 
 interface BuildingRowProps {
   building: Building

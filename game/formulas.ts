@@ -1,5 +1,5 @@
 import { GameState } from './state'
-import { Building, BuildingFormulaContext } from './buildings'
+import { Building, BuildingFormulaContext } from './building'
 import { MS_PER_HOUR } from './constants'
 
 export interface ResourceBlock {

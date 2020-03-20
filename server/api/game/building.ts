@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express'
 import { Building, Resource, Task } from '../../models'
 import { ForbiddenError } from '../../errors'
 import { first } from 'lodash'
-import { ResourceType } from 'game/formulas'
+import { ResourceType } from '../../../game'
 
 const r = express.Router()
 
