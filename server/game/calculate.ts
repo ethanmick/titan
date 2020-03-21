@@ -22,6 +22,7 @@ export const calculate = async (user: User) => {
   // Fetch the current state
   const state: GameState = {
     buildings: await Building.find({ where: { user } }),
+    tasks: [],
     temperature: AVERAGE_TEMPERATURE
   }
 

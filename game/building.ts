@@ -1,6 +1,7 @@
 import { find } from 'lodash'
 import { MS_PER_HOUR, SPEED } from './constants'
 import { FormulaContext, ResourceBlock } from './formulas'
+import { Task } from './task'
 
 export enum BuildingType {
   MetalMine = 'MetalMine',
@@ -15,6 +16,7 @@ export interface Building {
   description: string
   type: BuildingType
   level: number
+  task?: Task
 }
 
 const _productions = {
@@ -100,7 +102,7 @@ export class BuildingFormulaContext extends FormulaContext {
   }
 }
 
-export const Buildings = [
+export const Buildings: Building[] = [
   {
     name: 'Metal Mine',
     description:

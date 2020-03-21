@@ -1,4 +1,4 @@
-import { find } from 'lodash'
+import { cloneDeep, find } from 'lodash'
 import { GetServerSideProps } from 'next'
 import React from 'react'
 import { Cost, Production } from '../components'
@@ -35,6 +35,7 @@ const BuildingRow = ({ building, ctx, upgrade }: BuildingRowProps) => {
           <Cost cost={F.consumption()} />
         </div>
       </div>
+      {building.task && <div>CURRENTLY BUILDING: {building.task.doneAt}</div>}
       <div>
         Next Level upgrade
         <Cost cost={F.nextLevel().cost()} />
@@ -99,10 +100,25 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   try {
     const resources = await api.getResources()
     const state = await api.getState()
-    const buildings = Buildings.map(b => ({
-      ...b,
-      ...(find(state.buildings, { type: b.type }) ?? {})
-    }))
+    console.log('STATE', state.buildings, state.tasks)
+    const buildings = Buildings.map(b => {
+      const userBuilding = find(state.buildings, { type: b.type }) ?? { id: 0 }
+      const task = find(
+        state.tasks,
+        val =>
+          val.type == 'building.upgrade' &&
+          val.context.buildingId == userBuilding.id
+      )
+      console.log('Found task for building!!', task)
+      return {
+        ...b,
+        ...userBuilding,
+        ...(task ? { task: cloneDeep(task) } : {})
+      }
+    })
+
+    console.log('what hte fuck', buildings[0])
+
     return {
       props: { state, buildings, resources }
     }
