@@ -9,5 +9,6 @@ insert into users (username, password, token) values (
 -- Default Resources
 insert into resources (user_id, resource, amount) values
 (1, 'metal', 500),
-(1, 'crystal', 200)
+(1, 'crystal', 200),
+(1, 'deuterium', 0)
 ;

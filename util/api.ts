@@ -1,8 +1,9 @@
+import { BuildingType } from 'game'
+import { GameState } from 'game/state'
 import 'isomorphic-unfetch'
-import { getAuth } from '../util/auth'
 import { NextPageContext } from 'next'
 import Router from 'next/router'
-import { GameState } from 'game/state'
+import { getAuth } from '../util/auth'
 
 // TODO: this is broken?
 //const API_URL: string = get(getConfig(), 'publicRuntimeConfig.api.url', '/api')
@@ -90,8 +91,8 @@ export class Api {
 
   getBuildings = () => this._fetch<any>('/building')
 
-  upgradeBuilding = (id: number) =>
-    this._fetch(`/building/${id}/upgrade`, {
+  upgradeBuilding = (type: BuildingType) =>
+    this._fetch(`/building/${type}/upgrade`, {
       method: 'POST',
       body: '{}'
     })

@@ -1,11 +1,12 @@
-import { MS_PER_HOUR } from './constants'
+import { find } from 'lodash'
+import { MS_PER_HOUR, SPEED } from './constants'
 import { FormulaContext, ResourceBlock } from './formulas'
 
 export enum BuildingType {
-  MetalMine = 'METAL_MINE',
-  CrystalMine = 'CRYSTAL_MINE',
-  DeuteriumMine = 'DEUTERIUM_MINE',
-  SolarPlant = 'SOLAR_PLANT'
+  MetalMine = 'MetalMine',
+  CrystalMine = 'CrystalMine',
+  DeuteriumMine = 'DeuteriumMine',
+  SolarPlant = 'SolarPlant'
 }
 
 export interface Building {
@@ -18,13 +19,14 @@ export interface Building {
 
 const _productions = {
   [BuildingType.MetalMine]: ({ d, L, E }: FormulaContext) => ({
-    metal: ((30 * L * E * 1.1 ** L) / MS_PER_HOUR) * d
+    metal: ((30 * L * E * 1.1 ** L) / MS_PER_HOUR) * d * SPEED
   }),
   [BuildingType.CrystalMine]: ({ d, L, E }: FormulaContext) => ({
-    crystal: ((20 * L * E * 1.1 ** L) / MS_PER_HOUR) * d
+    crystal: ((20 * L * E * 1.1 ** L) / MS_PER_HOUR) * d * SPEED
   }),
   [BuildingType.DeuteriumMine]: ({ d, L, E, T }: FormulaContext) => ({
-    deuterium: ((10 * L * E * 1.1 ** L * (-0.002 * T + 1.28)) / MS_PER_HOUR) * d
+    deuterium:
+      ((10 * L * E * 1.1 ** L * (-0.002 * T + 1.28)) / MS_PER_HOUR) * d * SPEED
   }),
   [BuildingType.SolarPlant]: ({ L }: FormulaContext) => ({
     energy: 20 * L * 1.1 ** L
@@ -89,9 +91,12 @@ export class BuildingFormulaContext extends FormulaContext {
     return _cost[this.type](this)
   }
 
+  /**
+   * time in ms
+   */
   public time(): number {
     const { metal = 0, crystal = 0 } = this.cost()
-    return (metal + crystal) / 2500
+    return ((metal + crystal) / 2500) * SPEED * MS_PER_HOUR
   }
 }
 
@@ -123,3 +128,6 @@ export const Buildings = [
     level: 0
   }
 ]
+
+export const buildingFromType = (type: BuildingType) =>
+  find(Buildings, { type })

@@ -1,6 +1,6 @@
-import { GameState } from './state'
 import { Building, BuildingFormulaContext } from './building'
 import { MS_PER_HOUR } from './constants'
+import { GameState } from './state'
 
 export interface ResourceBlock {
   metal?: number
@@ -13,8 +13,16 @@ export class FormulaContext {
   d: number = 0
   L: number = 0
   T: number = 0
-  E: number = 0
-  _type: string
+
+  private _E: number = 0
+
+  public get E(): number {
+    return this._E
+  }
+
+  public set E(e: number) {
+    this._E = isNaN(e) ? 0 : e
+  }
 
   constructor(ctx?: FormulaContext) {
     this.d = ctx?.d ?? 0
@@ -35,6 +43,15 @@ export class FormulaContext {
   static fromState(state?: GameState) {
     const ctx = new FormulaContext()
     ctx.T = state?.temperature ?? 0
+
+    let energyProduction = 0
+    let energyConsumption = 0
+    for (let b of state?.buildings ?? []) {
+      const ctx_b = new FormulaContext()
+      energyProduction += ctx_b.building(b).production().energy ?? 0
+      energyConsumption += ctx_b.building(b).consumption().energy ?? 0
+    }
+    ctx.E = energyConsumption / energyProduction
     return ctx
   }
 }

@@ -30,7 +30,10 @@ const BuildingRow = ({ building, ctx, upgrade }: BuildingRowProps) => {
           currently producing:
           <Production production={F.perHour().production()} />
         </div>
-        <Cost cost={F.consumption()} />
+        <div>
+          Consuming
+          <Cost cost={F.consumption()} />
+        </div>
       </div>
       <div>
         Next Level upgrade
@@ -57,7 +60,7 @@ const BuildingPage = ({
   const upgrade = async (building: Building) => {
     const api = http()
     try {
-      await api.upgradeBuilding((building as any).id)
+      await api.upgradeBuilding(building.type)
     } catch {
       console.log('no resources, or something')
     }
@@ -79,6 +82,7 @@ const BuildingPage = ({
             {r.resource}:{r.amount}
           </div>
         ))}
+        <div>energy: ??</div>
       </div>
       <div>
         {buildings.map(b => (

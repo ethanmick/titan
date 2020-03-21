@@ -1,5 +1,5 @@
+import { Dictionary, map } from 'lodash'
 import React from 'react'
-import { map, Dictionary } from 'lodash'
 import { ResourceBlock } from '../game'
 
 export interface CostProps {
@@ -8,8 +8,8 @@ export interface CostProps {
 
 export const Cost = ({ cost }: CostProps) => (
   <>
-    {map(cost as Dictionary<number>).map((val, key) => (
-      <div>
+    {map(cost as Dictionary<number>, (val, key) => (
+      <div key={key}>
         {key}:{val}
       </div>
     ))}

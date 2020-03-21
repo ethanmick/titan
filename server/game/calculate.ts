@@ -1,7 +1,8 @@
-import { User, Building } from '../models'
+import { find } from 'lodash'
 import * as moment from 'moment'
+import { FormulaContext, GameState } from '../../game'
+import { Building, User } from '../models'
 import { Resource } from '../models/resource'
-import { sum } from 'lodash'
 
 const AVERAGE_TEMPERATURE = 50
 
@@ -14,38 +15,31 @@ export const calculate = async (user: User) => {
   const lastGameUpdate = moment.utc(user.lastGameUpdate)
   const now = moment.utc()
   const d = now.diff(lastGameUpdate)
-  const T = AVERAGE_TEMPERATURE
   user.lastGameUpdate = moment.utc().toDate()
   await user.save()
 
-  const energyProduction = sum(
-    (await Building.find({ where: { type: 'energy' } })).map(b => {
-      const { energy } = b.production()
-      return energy
-    })
-  )
+  // Fetch the current state
+  const state: GameState = {
+    buildings: await Building.find({ where: { user } }),
+    temperature: AVERAGE_TEMPERATURE
+  }
 
-  const energyConsumption = sum(
-    (await Building.find({ where: { user } })).map(b => {
-      const { energy } = b.cost()
-      return energy
-    })
-  )
-
-  const E = Math.max(energyProduction / energyConsumption, 1.0)
+  const ctx = FormulaContext.fromState(state)
+  ctx.d = d
 
   // Calculate resources
   const resources = await Resource.find({ where: { user } })
-  for (const res of resources) {
-    const building = await Building.findOne({
-      where: { user, resource: res.resource }
-    })
-    if (!building) {
-      // No building for this resource, so we don't need to change the amoutn
-      continue
+
+  // better way to do this?
+  for (let b of state.buildings) {
+    const made = ctx.building(b).production()
+    for (let [key] of Object.entries(made)) {
+      const res = find(resources, { resource: key })
+      res?.add(made)
     }
-    const gained = building.production({ d, T, E })
-    res.add(gained)
+  }
+
+  for (const res of resources) {
     await res.save()
   }
 }

@@ -3,10 +3,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  JoinColumn,
   ManyToOne,
-  JoinColumn
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
 } from 'typeorm'
 import { User } from './user'
 
@@ -22,7 +22,7 @@ export class Task extends BaseEntity {
   @Column()
   type: string
 
-  @Column('jsonb')
+  @Column({ type: 'jsonb' })
   context: any
 
   @Column({ name: 'done_at' })

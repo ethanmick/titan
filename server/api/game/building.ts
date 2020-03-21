@@ -1,8 +1,14 @@
 import express, { Request, Response } from 'express'
-import { Building, Resource, Task } from '../../models'
-import { ForbiddenError } from '../../errors'
 import { first } from 'lodash'
-import { ResourceType } from '../../../game'
+import * as moment from 'moment'
+import {
+  buildingFromType,
+  BuildingType,
+  FormulaContext,
+  ResourceType
+} from '../../../game'
+import { ForbiddenError } from '../../errors'
+import { Building, Resource, Task } from '../../models'
 
 const r = express.Router()
 
@@ -17,19 +23,33 @@ r.get('/', async (req: Request, res: Response) => {
   res.json(buildings)
 })
 
-r.post('/:id/upgrade', async (req: Request, res: Response) => {
-  const { id } = req.params
-  const { user } = req.ctx
-  const building = await Building.findOne({ where: { id, user } })
-  if (!building) {
-    throw new ForbiddenError()
+r.post('/:type/upgrade', async (req: Request, res: Response) => {
+  const { type: strType } = req.params
+  console.log('Tst', strType, BuildingType)
+  if (!(BuildingType as any)[strType]) {
+    throw new ForbiddenError('Unknown Building')
   }
+  const type = (BuildingType as any)[strType] as BuildingType
+  const { user } = req.ctx
+  let building = await Building.findOne({ where: { type, user } })
+
+  // If no building is found then we create a new "level 0" building
+  // for the caller to upgrade
+  if (!building) {
+    const found = buildingFromType(type) as Building
+    building = Building.create(found)
+    building.user = user
+    await building.save()
+  }
+
+  // TODO
   // Can't upgrade a building that is already upgrading
   // task.findOne({user, type: 'building.upgrade', context->>building_id = building.id})
 
   // Try to increase the level
   building.level++
-  const cost: any = {} // building.cost()
+  const ctx = FormulaContext.fromState().building(building)
+  const cost = ctx.cost()
   const resources = await Resource.find({ where: { user } })
 
   const toSave = []
@@ -53,14 +73,20 @@ r.post('/:id/upgrade', async (req: Request, res: Response) => {
 
   await Promise.all(toSave.map(r => r.save()))
 
+  console.log('Upgraindg will take', ctx.time())
+
   const task = new Task()
   task.user = user
   task.type = 'building.upgrade'
+  task.doneAt = moment
+    .utc()
+    .add(ctx.time(), 'ms')
+    .toDate()
   task.context = {
     buildingId: building.id
   }
   await task.save()
-  return res.json({ ok: 'ok' })
+  return res.status(202).json(task)
 })
 
 export const buildings = r
