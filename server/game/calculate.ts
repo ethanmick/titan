@@ -15,6 +15,7 @@ export const calculate = async (user: User) => {
   const lastGameUpdate = moment.utc(user.lastGameUpdate)
   const now = moment.utc()
   const d = now.diff(lastGameUpdate)
+  console.log('ms to calculate diff', d)
   user.lastGameUpdate = moment.utc().toDate()
   await user.save()
 
@@ -32,9 +33,12 @@ export const calculate = async (user: User) => {
 
   // better way to do this?
   for (let b of state.buildings) {
+    console.log('Calcilate', b.type)
     const made = ctx.building(b).production()
+    console.log('MADE', made)
     for (let [key] of Object.entries(made)) {
       const res = find(resources, { resource: key })
+      console.log('For made', key, ' found res', res)
       res?.add(made)
     }
   }

@@ -1,4 +1,5 @@
 import express from 'express'
+import 'express-async-errors'
 import next from 'next'
 import { api } from './api'
 import { startFinishedTaskLoop } from './game/worker'

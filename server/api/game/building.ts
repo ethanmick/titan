@@ -73,7 +73,15 @@ r.post('/:type/upgrade', async (req: Request, res: Response) => {
 
   await Promise.all(toSave.map(r => r.save()))
 
-  console.log('Upgraindg will take', ctx.time())
+  console.log('Upgrading Will Take MS:', ctx.time())
+  console.log(
+    'Timing:',
+    moment.utc().format(),
+    moment
+      .utc()
+      .add(ctx.time())
+      .format()
+  )
 
   const task = new Task()
   task.user = user

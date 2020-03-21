@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt'
 import {
   BaseEntity,
   Column,
@@ -6,7 +7,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
-import bcrypt from 'bcrypt'
 import { v4 as uuid } from 'uuid'
 import { UnauthorizedError } from '../errors'
 
@@ -26,13 +26,13 @@ export class User extends BaseEntity {
   @Column()
   token: string
 
-  @Column({ name: 'last_game_update' })
+  @Column({ name: 'last_game_update', type: 'timestamptz' })
   lastGameUpdate: Date
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
   updatedAt: Date
 
   static async register(
