@@ -1,6 +1,6 @@
 import { get } from 'lodash'
-import { Building, connection, Task, User } from '../models'
 import { calculate } from './calculate'
+import { Building, connection, Task, User } from './models'
 
 /////////////////////////// workers ////////////////////////////////
 

@@ -131,5 +131,22 @@ export const Buildings: Building[] = [
   }
 ]
 
+/*
+Research Lab
+Metal:	200
+Crystal:	400
+Deuterium:	200
+
+doubles each level
+
+
+shipyard
+
+Metal:	400
+Crystal:	200
+Deuterium:	100
+Robotic Factory Level 2 (for both construction and deconstruction)
+*/
+
 export const buildingFromType = (type: BuildingType) =>
   find(Buildings, { type })

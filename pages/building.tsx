@@ -1,5 +1,6 @@
 import { cloneDeep, find } from 'lodash'
 import { GetServerSideProps } from 'next'
+import Link from 'next/link'
 import React from 'react'
 import { Cost, Production } from '../components'
 import { Building, Buildings, FormulaContext, GameState } from '../game/'
@@ -77,6 +78,23 @@ const BuildingPage = ({
   return (
     <>
       <h1>Buildings</h1>
+      <ul>
+        <li>
+          <Link href="/building">
+            <a>Buildings</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/research">
+            <a>Research</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/shipyard">
+            <a>Shipyard</a>
+          </Link>
+        </li>
+      </ul>
       <div>
         {resources.map(r => (
           <div key={r.id}>

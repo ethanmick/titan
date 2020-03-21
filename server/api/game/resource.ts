@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express'
-import { calculate } from '../../game/calculate'
+import { calculate } from '../../calculate'
 import { Resource } from '../../models'
 
 const r = express.Router()

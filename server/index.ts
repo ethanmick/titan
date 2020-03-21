@@ -2,8 +2,8 @@ import express from 'express'
 import 'express-async-errors'
 import next from 'next'
 import { api } from './api'
-import { startFinishedTaskLoop } from './game/worker'
 import { connection } from './models'
+import { startFinishedTaskLoop } from './worker'
 
 const port = parseInt(process.env.PORT || '3000', 10)
 const dev = process.env.NODE_ENV !== 'production'

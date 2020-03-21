@@ -1,8 +1,8 @@
 import { find } from 'lodash'
 import * as moment from 'moment'
-import { FormulaContext, GameState } from '../../game'
-import { Building, User } from '../models'
-import { Resource } from '../models/resource'
+import { FormulaContext, GameState } from '../game'
+import { Building, User } from './models'
+import { Resource } from './models/resource'
 
 const AVERAGE_TEMPERATURE = 50
 

@@ -1,10 +1,10 @@
-import React, { useContext } from 'react'
 import { GetServerSideProps } from 'next'
+import nextCookie from 'next-cookies'
+import Link from 'next/link'
+import Router from 'next/router'
+import React from 'react'
 import { User } from '../server/models'
 import { http } from '../util/api'
-import Router from 'next/router'
-import nextCookie from 'next-cookies'
-import { UserContext } from '../context/UserContext'
 
 interface OverviewProps {
   user: User
@@ -12,25 +12,37 @@ interface OverviewProps {
 }
 
 const Overview = ({ error }: OverviewProps) => {
-  const { user } = useContext(UserContext)
   if (error) {
     return <>{error}</>
   }
   return (
     <>
       <h1>Overview</h1>
-      <div>{user?.username}</div>
+      <ul>
+        <li>
+          <Link href="/building">
+            <a>Buildings</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/research">
+            <a>Research</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/shipyard">
+            <a>Shipyard</a>
+          </Link>
+        </li>
+      </ul>
     </>
   )
 }
 
 // This always runs on the SERVER
 export const getServerSideProps: GetServerSideProps = async ctx => {
-  console.log(ctx.req.headers)
   const api = http(ctx)
-  console.log('token', api.token)
   try {
-    // DB??
     const buildings = await api.getBuildings()
     const user = await api.getCurrentUser()
     return {
