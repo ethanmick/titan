@@ -21,7 +21,7 @@ export class FormulaContext {
   }
 
   public set E(e: number) {
-    this._E = isNaN(e) ? 0 : e
+    this._E = isNaN(e) ? 0 : Math.min(e, 1.0)
   }
 
   constructor(ctx?: FormulaContext) {
@@ -51,7 +51,7 @@ export class FormulaContext {
       energyProduction += ctx_b.building(b).production().energy ?? 0
       energyConsumption += ctx_b.building(b).consumption().energy ?? 0
     }
-    ctx.E = energyConsumption / energyProduction
+    ctx.E = energyProduction / energyConsumption
     return ctx
   }
 }

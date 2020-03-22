@@ -21,14 +21,16 @@ export interface Building {
 
 const _productions = {
   [BuildingType.MetalMine]: ({ d, L, E }: FormulaContext) => ({
-    metal: ((30 * L * E * 1.1 ** L) / MS_PER_HOUR) * d * SPEED
+    metal: ((30 * SPEED * L * E * 1.1 ** L) / MS_PER_HOUR) * d
   }),
   [BuildingType.CrystalMine]: ({ d, L, E }: FormulaContext) => ({
-    crystal: ((20 * L * E * 1.1 ** L) / MS_PER_HOUR) * d * SPEED
+    crystal: ((20 * SPEED * L * E * 1.1 ** L) / MS_PER_HOUR) * d
   }),
   [BuildingType.DeuteriumMine]: ({ d, L, E, T }: FormulaContext) => ({
     deuterium:
-      ((10 * L * E * 1.1 ** L * (-0.002 * T + 1.28)) / MS_PER_HOUR) * d * SPEED
+      ((10 * SPEED * L * E * 1.1 ** L * (-0.002 * T + 1.28)) / MS_PER_HOUR) *
+      d *
+      SPEED
   }),
   [BuildingType.SolarPlant]: ({ L }: FormulaContext) => ({
     energy: 20 * L * 1.1 ** L
@@ -82,6 +84,7 @@ export class BuildingFormulaContext extends FormulaContext {
   }
 
   public production(): ResourceBlock {
+    console.log(this)
     return _productions[this.type](this)
   }
 

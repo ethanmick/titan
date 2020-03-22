@@ -1,4 +1,4 @@
-import { cloneDeep, find } from 'lodash'
+import { clone, cloneDeep, find } from 'lodash'
 import { GetServerSideProps } from 'next'
 import Link from 'next/link'
 import React from 'react'
@@ -29,17 +29,25 @@ const BuildingRow = ({ building, ctx, upgrade }: BuildingRowProps) => {
         <div>Level: {building.level}</div>
         <div>
           currently producing:
-          <Production production={F.perHour().production()} />
+          <Production
+            production={clone(F)
+              .perHour()
+              .production()}
+          />
         </div>
         <div>
           Consuming
-          <Cost cost={F.consumption()} />
+          <Cost cost={clone(F).consumption()} />
         </div>
       </div>
       {building.task && <div>CURRENTLY BUILDING: {building.task.doneAt}</div>}
       <div>
         Next Level upgrade
-        <Cost cost={F.nextLevel().cost()} />
+        <Cost
+          cost={clone(F)
+            .nextLevel()
+            .cost()}
+        />
         <button onClick={onClick}>Upgrade</button>
       </div>
     </div>
