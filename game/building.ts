@@ -7,7 +7,22 @@ export enum BuildingType {
   MetalMine = 'MetalMine',
   CrystalMine = 'CrystalMine',
   DeuteriumMine = 'DeuteriumMine',
-  SolarPlant = 'SolarPlant'
+  SolarPlant = 'SolarPlant',
+  RoboticsFactory = 'RoboticsFactory',
+  Shipyard = 'Shipyard',
+  ResearchLab = 'ResearchLab'
+}
+
+export interface BuildingLevelRequirement {
+  level: number
+}
+
+type BuildingRequirement = {
+  [key in keyof typeof BuildingType]?: BuildingLevelRequirement
+}
+
+export interface Requirements {
+  buildings?: BuildingRequirement
 }
 
 export interface Building {
@@ -16,6 +31,7 @@ export interface Building {
   description: string
   type: BuildingType
   level: number
+  requirements?: Requirements
   task?: Task
 }
 
@@ -34,7 +50,11 @@ const _productions = {
   }),
   [BuildingType.SolarPlant]: ({ L }: FormulaContext) => ({
     energy: 20 * L * 1.1 ** L
-  })
+  }),
+  [BuildingType.SolarPlant]: (_: FormulaContext) => ({}),
+  [BuildingType.RoboticsFactory]: (_: FormulaContext) => ({}),
+  [BuildingType.Shipyard]: (_: FormulaContext) => ({}),
+  [BuildingType.ResearchLab]: (_: FormulaContext) => ({})
 }
 
 const _consumption = {
@@ -47,7 +67,10 @@ const _consumption = {
   [BuildingType.DeuteriumMine]: ({ L }: FormulaContext) => ({
     energy: 20 * L * 1.1 ** L
   }),
-  [BuildingType.SolarPlant]: (_: FormulaContext) => ({})
+  [BuildingType.SolarPlant]: (_: FormulaContext) => ({}),
+  [BuildingType.RoboticsFactory]: (_: FormulaContext) => ({}),
+  [BuildingType.Shipyard]: (_: FormulaContext) => ({}),
+  [BuildingType.ResearchLab]: (_: FormulaContext) => ({})
 }
 
 const _cost = {
@@ -66,6 +89,21 @@ const _cost = {
   [BuildingType.SolarPlant]: ({ L }: FormulaContext) => ({
     metal: 75 * 1.5 ** (L - 1),
     crystal: 30 * 1.5 ** (L - 1)
+  }),
+  [BuildingType.RoboticsFactory]: ({ L }: FormulaContext) => ({
+    metal: 400 * 2.0 ** (L - 1),
+    crystal: 120 * 2.0 ** (L - 1),
+    deuterium: 200 * 2.0 ** (L - 1)
+  }),
+  [BuildingType.Shipyard]: ({ L }: FormulaContext) => ({
+    metal: 400 * 2.0 ** (L - 1),
+    crystal: 200 * 2.0 ** (L - 1),
+    deuterium: 100 * 2.0 ** (L - 1)
+  }),
+  [BuildingType.ResearchLab]: ({ L }: FormulaContext) => ({
+    metal: 200 * 2.0 ** (L - 1),
+    crystal: 400 * 2.0 ** (L - 1),
+    deuterium: 200 * 2.0 ** (L - 1)
   })
 }
 
@@ -131,25 +169,35 @@ export const Buildings: Building[] = [
     description: 'Produces energy from the sun. Energy is used to power mines',
     type: BuildingType.SolarPlant,
     level: 0
+  },
+  {
+    name: 'Robotics Factory',
+    description:
+      'Reduce the time taken to construct buildings but not research times nor that of defensive structures.',
+    type: BuildingType.RoboticsFactory,
+    level: 0
+  },
+  {
+    name: 'Shipyard',
+    description:
+      'The Shipyard is responsible for constructing all ships and defensive structures',
+    type: BuildingType.SolarPlant,
+    level: 0,
+    requirements: {
+      buildings: {
+        [BuildingType.RoboticsFactory]: {
+          level: 2
+        }
+      }
+    }
+  },
+  {
+    name: 'Research Lab',
+    description: 'allows you to conduct Research. ',
+    type: BuildingType.ResearchLab,
+    level: 0
   }
 ]
-
-/*
-Research Lab
-Metal:	200
-Crystal:	400
-Deuterium:	200
-
-doubles each level
-
-
-shipyard
-
-Metal:	400
-Crystal:	200
-Deuterium:	100
-Robotic Factory Level 2 (for both construction and deconstruction)
-*/
 
 export const buildingFromType = (type: BuildingType) =>
   find(Buildings, { type })
