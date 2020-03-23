@@ -38,6 +38,20 @@ create table resources (
   updated_at timestamptz
 );
 
+
+create table research (
+  id serial not null primary key,
+  user_id int not null,
+  name text not null,
+  description text not null,
+  type text not null,
+  level int not null,
+  -- Model Objects
+  created_at timestamptz not null default now(),
+  updated_at timestamptz
+);
+
+
 -- Task queue
 create table tasks (
   id serial not null primary key,

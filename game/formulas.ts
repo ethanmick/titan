@@ -1,5 +1,6 @@
-import { Building, BuildingFormulaContext } from './building'
+import { Building } from './building'
 import { MS_PER_HOUR } from './constants'
+import { Research } from './research'
 import { GameState } from './state'
 
 export interface ResourceBlock {
@@ -37,7 +38,13 @@ export class FormulaContext {
   }
 
   building(building: Building) {
+    const BuildingFormulaContext = require('./building').BuildingFormulaContext
     return new BuildingFormulaContext(this, building)
+  }
+
+  research(research: Research) {
+    const ResearchFormulaContext = require('./research').ResearchFormulaContext
+    return new ResearchFormulaContext(this, research)
   }
 
   static fromState(state?: GameState) {

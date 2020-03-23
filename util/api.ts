@@ -1,4 +1,4 @@
-import { BuildingType } from 'game'
+import { BuildingType, ResearchType } from 'game'
 import { GameState } from 'game/state'
 import 'isomorphic-unfetch'
 import { NextPageContext } from 'next'
@@ -98,6 +98,14 @@ export class Api {
     })
 
   getResources = () => this._fetch('/resource')
+
+  getResearch = () => this._fetch('/research')
+
+  upgradeResearch = (type: ResearchType) =>
+    this._fetch(`/research/${type}/upgrade`, {
+      method: 'POST',
+      body: '{}'
+    })
 
   getState = () => this._fetch<GameState>('/state')
 }

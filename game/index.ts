@@ -1,6 +1,7 @@
 export * from './building'
 export * from './constants'
 export * from './formulas'
+export * from './research'
 export * from './resource'
 export * from './state'
 export * from './task'
