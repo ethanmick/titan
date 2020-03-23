@@ -1,6 +1,7 @@
 import { find } from 'lodash'
 import { MS_PER_HOUR, SPEED } from './constants'
 import { FormulaContext, ResourceBlock } from './formulas'
+import { ResearchType } from './research'
 import { Task } from './task'
 
 export enum BuildingType {
@@ -13,16 +14,21 @@ export enum BuildingType {
   ResearchLab = 'ResearchLab'
 }
 
-export interface BuildingLevelRequirement {
+export interface LevelRequirement {
   level: number
 }
 
 type BuildingRequirement = {
-  [key in keyof typeof BuildingType]?: BuildingLevelRequirement
+  [key in keyof typeof BuildingType]?: LevelRequirement
+}
+
+type ResearchRequirement = {
+  [key in keyof typeof ResearchType]?: LevelRequirement
 }
 
 export interface Requirements {
   buildings?: BuildingRequirement
+  research?: ResearchRequirement
 }
 
 export interface Building {

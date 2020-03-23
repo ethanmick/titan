@@ -1,6 +1,6 @@
 import { get } from 'lodash'
 import { calculate } from './calculate'
-import { Building, connection, Task, User } from './models'
+import { Building, connection, Research, Task, User } from './models'
 
 /////////////////////////// workers ////////////////////////////////
 
@@ -24,6 +24,26 @@ const BuildingUpgrade = async (
   await building.save()
 }
 
+interface ResearchFinishedTask {
+  researchId: number
+}
+
+const ResearchUpgrade = async (
+  user: User,
+  { researchId: id }: ResearchFinishedTask
+) => {
+  const research = await Research.findOne(id)
+  // This should never happen
+  if (!research) {
+    console.log('task research.upgrade Research not found!')
+    return
+  }
+
+  await calculate(user)
+  research.level++
+  await research.save()
+}
+
 const getTasks = () =>
   connection()
     .getRepository(Task)
@@ -35,6 +55,9 @@ const getTasks = () =>
 const workers = {
   building: {
     upgrade: BuildingUpgrade
+  },
+  research: {
+    upgrade: ResearchUpgrade
   }
 }
 

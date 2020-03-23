@@ -1,3 +1,4 @@
+import { find } from 'lodash'
 import { BuildingType, Requirements } from './building'
 import { MS_PER_HOUR, SPEED } from './constants'
 import { FormulaContext, ResourceBlock } from './formulas'
@@ -5,7 +6,12 @@ import { Task } from './task'
 
 export enum ResearchType {
   EnergyTechnology = 'EnergyTechnology',
-  CombustionDrive = 'CombustionDrive'
+  CombustionDrive = 'CombustionDrive',
+  ComputerTechnology = 'ComputerTechnology',
+  LaserTechnology = 'LaserTechnology',
+  ArmorTechnology = 'ArmorTechnology',
+  ImpulseDrive = 'ImpulseDrive',
+  IonTechnology = 'IonTechnology'
 }
 
 export interface Research {
@@ -26,6 +32,27 @@ const _cost = {
   [ResearchType.CombustionDrive]: ({ L }: FormulaContext) => ({
     metal: 400 * 2.0 ** (L - 1),
     deuterium: 600 * 2.0 ** (L - 1)
+  }),
+  [ResearchType.ComputerTechnology]: ({ L }: FormulaContext) => ({
+    crystal: 400 * 2.0 ** (L - 1),
+    deuterium: 600 * 2.0 ** (L - 1)
+  }),
+  [ResearchType.LaserTechnology]: ({ L }: FormulaContext) => ({
+    metal: 200 * 2.0 ** (L - 1),
+    crystal: 100 * 2.0 ** (L - 1)
+  }),
+  [ResearchType.ArmorTechnology]: ({ L }: FormulaContext) => ({
+    metal: 1000 * 2.0 ** (L - 1)
+  }),
+  [ResearchType.ImpulseDrive]: ({ L }: FormulaContext) => ({
+    metal: 2000 * 2.0 ** (L - 1),
+    crystal: 4000 * 2.0 ** (L - 1),
+    deuterium: 600 * 2.0 ** (L - 1)
+  }),
+  [ResearchType.IonTechnology]: ({ L }: FormulaContext) => ({
+    metal: 1000 * 2.0 ** (L - 1),
+    crystal: 300 * 2.0 ** (L - 1),
+    deuterium: 100 * 2.0 ** (L - 1)
   })
 }
 
@@ -58,14 +85,6 @@ export class ResearchFormulaContext extends FormulaContext {
   }
 }
 
-// Laser Tech
-
-// Ion Tech
-
-// Armor Tech
-
-// Impulse drive
-
 export const Researches: Research[] = [
   {
     name: 'Energy Technology',
@@ -80,5 +99,92 @@ export const Researches: Research[] = [
         }
       }
     }
+  },
+  {
+    name: 'Computer Technology',
+    description: '',
+    type: ResearchType.ComputerTechnology,
+    level: 0,
+    requirements: {
+      buildings: {
+        [BuildingType.ResearchLab]: {
+          level: 1
+        }
+      }
+    }
+  },
+
+  {
+    name: 'Combustion Drive',
+    description: '',
+    type: ResearchType.CombustionDrive,
+    level: 0,
+    requirements: {
+      buildings: {
+        [BuildingType.ResearchLab]: {
+          level: 1
+        }
+      },
+      research: {
+        [ResearchType.EnergyTechnology]: {
+          level: 1
+        }
+      }
+    }
+  },
+  {
+    name: 'Laser Technology',
+    description: '',
+    type: ResearchType.LaserTechnology,
+    level: 0,
+    requirements: {
+      buildings: {
+        [BuildingType.ResearchLab]: {
+          level: 1
+        }
+      }
+    }
+  },
+  {
+    name: 'Armor Technology',
+    description: '',
+    type: ResearchType.ArmorTechnology,
+    level: 0,
+    requirements: {
+      buildings: {
+        [BuildingType.ResearchLab]: {
+          level: 2
+        }
+      }
+    }
+  },
+  {
+    name: 'Impulse Drive',
+    description: '',
+    type: ResearchType.ImpulseDrive,
+    level: 0,
+    requirements: {
+      buildings: {
+        [BuildingType.ResearchLab]: {
+          level: 2
+        }
+      }
+    }
+  },
+  {
+    name: 'Ion Technology',
+    description: '',
+    type: ResearchType.IonTechnology,
+    level: 0,
+    requirements: {
+      buildings: {
+        [BuildingType.ResearchLab]: {
+          level: 4
+        }
+      }
+    }
   }
 ]
+
+export const researchFromType = (type: ResearchType) =>
+  find(Researches, { type })
