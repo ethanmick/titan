@@ -52,6 +52,19 @@ create table research (
 );
 
 
+create table ships (
+  id serial not null primary key,
+  user_id int not null,
+  name text not null,
+  description text not null,
+  type text not null,
+  -- amount?
+  -- Model Objects
+  created_at timestamptz not null default now(),
+  updated_at timestamptz
+);
+
+
 -- Task queue
 create table tasks (
   id serial not null primary key,
