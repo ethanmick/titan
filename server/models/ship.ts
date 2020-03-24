@@ -8,11 +8,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
-import { BuildingType } from '../../game'
+import { ShipType } from '../../game'
 import { User } from './user'
 
-@Entity('buildings')
-export class Building extends BaseEntity {
+@Entity('ships')
+export class Ship extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
@@ -20,13 +20,7 @@ export class Building extends BaseEntity {
   name: string
 
   @Column()
-  type: BuildingType
-
-  @Column()
-  level: number
-
-  @Column()
-  resource: string
+  type: ShipType
 
   @Column()
   description: string

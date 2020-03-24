@@ -1,7 +1,7 @@
 import { find } from 'lodash'
 import * as moment from 'moment'
 import { FormulaContext, GameState } from '../game'
-import { Building, Research, User } from './models'
+import { Building, Research, Ship, User } from './models'
 import { Resource } from './models/resource'
 
 const AVERAGE_TEMPERATURE = 50
@@ -23,6 +23,8 @@ export const calculate = async (user: User) => {
   const state: GameState = {
     buildings: await Building.find({ where: { user } }),
     research: await Research.find({ where: { user } }),
+    ships: await Ship.find({ where: { user } }),
+    defense: [],
     tasks: [],
     temperature: AVERAGE_TEMPERATURE
   }

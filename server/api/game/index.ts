@@ -3,6 +3,7 @@ import { last } from 'lodash'
 import { UnauthorizedError } from '../../errors'
 import { User } from '../../models'
 import { buildings } from './building'
+import { research } from './research'
 import { resources } from './resource'
 import { state } from './state'
 
@@ -23,6 +24,7 @@ r.use(async (req: Request, _res: Response, next: NextFunction) => {
 })
 
 r.use('/building', buildings)
+r.use('/research', research)
 r.use('/resource', resources)
 r.use('/state', state)
 
