@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express'
-import { first } from 'lodash'
 import * as moment from 'moment'
 import {
   buildingFromType,
@@ -8,16 +7,19 @@ import {
   ResourceType
 } from '../../../game'
 import { ForbiddenError } from '../../errors'
-import { Building, Resource, Task } from '../../models'
+import { Building, Resource, Task, UserResource } from '../../models'
 
 const r = express.Router()
 
 r.get('/', async (req: Request, res: Response) => {
   const { user } = req.ctx
+
+  console.log('BIG TEST', await UserResource.findForUser(user))
+
   const buildings = (await Building.find({ where: { userId: user.id } })).map(
     b => ({
-      ...b,
-      ...b //.cost()
+      ...b
+      // ...b //.cost()
     })
   )
   res.json(buildings)
@@ -57,9 +59,13 @@ r.post('/:type/upgrade', async (req: Request, res: Response) => {
   for (const resourceNameString in cost) {
     const rn = resourceNameString as ResourceType
     const costAmount = cost[rn] ?? 0
-    const found = first(
-      resources.filter(r => r.resource === resourceNameString)
-    )
+
+    // FIX
+    //    const found = first(
+    //      resources.filter(r => r.resource === resourceNameString)
+    //    )
+    const found: any = resources[0]
+    // derp
     const foundAmount = found ? found.amount : 0
     const diff = foundAmount - costAmount
     if (diff < 0) {

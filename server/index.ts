@@ -11,24 +11,28 @@ const app = next({ dev })
 const handle = app.getRequestHandler()
 
 const main = async () => {
-  await app.prepare()
-  await connection()
+  try {
+    await app.prepare()
+    await connection()
 
-  setInterval(startFinishedTaskLoop, 1000)
+    setInterval(startFinishedTaskLoop, 1000)
 
-  const server = express()
+    const server = express()
 
-  server.use('/public', express.static('public'))
-  server.use('/api', api)
+    server.use('/public', express.static('public'))
+    server.use('/api', api)
 
-  server.all('*', (req: any, res: any) => {
-    return handle(req, res)
-  })
+    server.all('*', (req: any, res: any) => {
+      return handle(req, res)
+    })
 
-  server.listen(port, (err: Error) => {
-    if (err) throw err
-    console.log(`> Ready on http://localhost:${port}`)
-  })
+    server.listen(port, (err: Error) => {
+      if (err) throw err
+      console.log(`> Ready on http://localhost:${port}`)
+    })
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 main()

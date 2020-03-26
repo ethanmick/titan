@@ -1,11 +1,15 @@
 import express, { Request, Response } from 'express'
 import { GameState } from '../../../game/state'
-import { Building, Research, Ship, Task } from '../../models'
+import { Building, Research, Ship, Task, UserResource } from '../../models'
 
 const r = express.Router()
 
 r.get('/', async (req: Request, res: Response) => {
   const { user } = req.ctx
+
+  // TEST
+  console.log('BIG TEST', await UserResource.findForUser(user))
+
   const buildings = await Building.find({ where: { user } })
   const research = await Research.find({ where: { user } })
   const tasks = await Task.find({ where: { user } })

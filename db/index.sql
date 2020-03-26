@@ -28,11 +28,11 @@ create table buildings (
   updated_at timestamptz
 );
 
+
 create table resources (
   id serial not null primary key,
-  user_id int not null,
-  resource text not null,
-  amount double precision not null,
+  name text not null,
+  description text not null,
   -- Model Objects
   created_at timestamptz not null default now(),
   updated_at timestamptz
@@ -58,7 +58,7 @@ create table ships (
   name text not null,
   description text not null,
   type text not null,
-  -- amount?
+  amount int not null,
   -- Model Objects
   created_at timestamptz not null default now(),
   updated_at timestamptz
@@ -72,6 +72,17 @@ create table tasks (
   type text not null,
   context jsonb not null,
   done_at timestamptz not null,
+  -- Model Objects
+  created_at timestamptz not null default now(),
+  updated_at timestamptz
+);
+
+-- Join Tables
+create table user_resources (
+  id serial not null primary key,
+  user_id int not null,
+  resource_id int not null,
+  amount double precision not null,
   -- Model Objects
   created_at timestamptz not null default now(),
   updated_at timestamptz

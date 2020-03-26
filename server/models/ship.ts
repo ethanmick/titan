@@ -25,6 +25,9 @@ export class Ship extends BaseEntity {
   @Column()
   description: string
 
+  @Column()
+  amount: number
+
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: User

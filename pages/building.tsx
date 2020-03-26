@@ -124,7 +124,7 @@ const BuildingPage = ({
 export const getServerSideProps: GetServerSideProps = async ctx => {
   const api = http(ctx)
   try {
-    const resources = await api.getResources()
+    //    const resources = await api.getResources()
     const state = await api.getState()
     console.log('STATE', state.buildings, state.tasks)
     const buildings = Buildings.map(b => {
@@ -146,7 +146,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
     console.log('what hte fuck', buildings[0])
 
     return {
-      props: { state, buildings, resources }
+      props: { state, buildings, resources: state.resources }
     }
   } catch (err) {
     return {

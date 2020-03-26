@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express'
-import { find, first } from 'lodash'
+import { find } from 'lodash'
 import * as moment from 'moment'
 import {
   FormulaContext,
@@ -18,6 +18,7 @@ r.get('/', async (req: Request, res: Response) => {
   res.json(research)
 })
 
+// BROKENNNNN
 r.post('/:type/upgrade', async (req: Request, res: Response) => {
   const { type: strType } = req.params
   if (!(ResearchType as any)[strType]) {
@@ -70,9 +71,11 @@ r.post('/:type/upgrade', async (req: Request, res: Response) => {
   for (const resourceNameString in cost) {
     const rn = resourceNameString as ResourceType
     const costAmount = cost[rn] ?? 0
-    const found = first(
-      resources.filter(r => r.resource === resourceNameString)
-    )
+    //    const found = first(
+    //      resources.filter(r => r.resource === resourceNameString)
+    //    )
+    const found: any = resources[0]
+    // FIX
     const foundAmount = found ? found.amount : 0
     const diff = foundAmount - costAmount
     if (diff < 0) {

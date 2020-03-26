@@ -21,6 +21,7 @@ export interface Ship {
   name: string
   description: string
   type: ShipType
+  amount: number
   requirements?: Requirements
   task?: Task
 }
@@ -39,12 +40,14 @@ export const Ships: Ship[] = [
     name: 'Light Fighter',
     description: '',
     type: ShipType.LightFighter,
+    amount: 0,
     requirements: {}
   },
   {
     name: 'Small Cargo Ship',
     description: '',
     type: ShipType.SmallCargoShip,
+    amount: 0,
     requirements: {}
   }
 ]

@@ -43,7 +43,8 @@ export const calculate = async (user: User) => {
     for (let [key] of Object.entries(made)) {
       const res = find(resources, { resource: key })
       console.log('For made', key, ' found res', res)
-      res?.add(made)
+      //res?.add(made)
+      // TODO: Fix
     }
   }
 

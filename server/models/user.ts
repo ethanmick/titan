@@ -4,11 +4,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 import { UnauthorizedError } from '../errors'
+import { UserResource } from './user_resource'
 
 const SALT_ROUNDS = 12
 
@@ -34,6 +36,13 @@ export class User extends BaseEntity {
 
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
   updatedAt: Date
+
+  // Relations
+  @OneToMany(
+    () => UserResource,
+    userResource => userResource.user
+  )
+  public userResources!: UserResource[]
 
   static async register(
     username: string,

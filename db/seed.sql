@@ -6,9 +6,9 @@ insert into users (username, password, token) values (
     'token'
 );
 
--- Default Resources
-insert into resources (user_id, resource, amount) values
-(1, 'metal', 500),
-(1, 'crystal', 200),
-(1, 'deuterium', 0)
+-- Game Resources
+insert into resources (name, description) values
+('metal', 'A common resource'),
+('crystal', 'Used in electric circuits'),
+('deuterium', 'Fuel for ships')
 ;

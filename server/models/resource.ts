@@ -3,27 +3,22 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  JoinColumn
+  UpdateDateColumn
 } from 'typeorm'
-import { User } from './user'
+import { UserResource } from './user_resource'
 
 @Entity('resources')
 export class Resource extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'user_id' })
-  user: User
+  @Column()
+  name: string
 
   @Column()
-  resource: string
-
-  @Column()
-  amount: number
+  description: string
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date
@@ -31,7 +26,10 @@ export class Resource extends BaseEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
 
-  public add(res: any) {
-    this.amount += res[this.resource]
-  }
+  // Relations
+  @OneToMany(
+    () => UserResource,
+    userResource => userResource.resource
+  )
+  userResources!: UserResource[]
 }

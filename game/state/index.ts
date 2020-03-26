@@ -6,6 +6,7 @@ import { Task } from '../task'
 export interface GameState {
   buildings: Building[]
   research: Research[]
+  resources?: any
   ships: Ship[]
   defense: Defense[]
   tasks: Task[]
